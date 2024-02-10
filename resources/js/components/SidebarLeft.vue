@@ -28,9 +28,11 @@ const logout = () => {
         <div class="sidebar">
 
             <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                <!-- AVATAR -->
                 <div class="image">
                     <img :src="authUserStore.user.avatar" class="img-circle elevation-2" alt="User Image">
                 </div>
+                <!-- ACTUAL USER NAME -->
                 <div class="info">
                     <a href="#" class="d-block">{{ authUserStore.user.name }}</a>
                 </div>
@@ -49,7 +51,8 @@ const logout = () => {
 
                     <li class="nav-item">
                         <router-link to="/admin/appointments"
-                            :class="$route.path.startsWith('/admin/appointments') ? 'active' : ''" class="nav-link">
+                            :class="$route.path.startsWith('/admin/appointments') ? 'active' : ''" 
+                            class="nav-link">
                             <i class="nav-icon fas fa-calendar-alt"></i>
                             <p>
                                 Appointments
@@ -58,7 +61,9 @@ const logout = () => {
                     </li>
 
                     <li class="nav-item">
-                        <router-link to="/admin/users" active-class="active" class="nav-link">
+                        <router-link to="/admin/users" 
+                                     active-class="active" 
+                                     class="nav-link">
                             <i class="nav-icon fas fa-users"></i>
                             <p>
                                 Users
@@ -67,7 +72,20 @@ const logout = () => {
                     </li>
 
                     <li class="nav-item">
-                        <router-link to="/admin/settings" active-class="active" class="nav-link">
+                        <router-link to="/admin/clients" 
+                                     active-class="active" 
+                                     class="nav-link">
+                            <i class="nav-icon fas fa-users"></i>
+                            <p>
+                                Clients
+                            </p>
+                        </router-link>
+                    </li>
+
+                    <li class="nav-item">
+                        <router-link to="/admin/settings" 
+                                     active-class="active" 
+                                     class="nav-link">
                             <i class="nav-icon fas fa-cog"></i>
                             <p>
                                 Settings

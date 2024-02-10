@@ -215,4 +215,6 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
+    'pagination_limit' => 10,
+    
 ];

@@ -1,68 +1,73 @@
 <script setup>
-import { onMounted, reactive, ref } from 'vue';
-import { useToastr } from '@/toastr';
-import { useAuthUserStore } from '../../stores/AuthUserStore';
+    import { onMounted, reactive, ref } from 'vue';
+    import { useToastr } from '@/toastr';
+    import { useAuthUserStore } from '../../stores/AuthUserStore';
 
-const authUserStore = useAuthUserStore();
-const toastr = useToastr();
+    const authUserStore = useAuthUserStore();
+    const toastr = useToastr();
 
-const errors = ref([]);
-const updateProfile = () => {
-    axios.put('/api/profile', {
-        name: authUserStore.user.name,
-        email: authUserStore.user.email,
-        role: authUserStore.user.role,
-    })
-    .then((response) => {
-        toastr.success('Profile updated successfully!');
-    })
-    .catch((error) => {
-        if (error.response && error.response.status === 422) {
-            errors.value = error.response.data.errors;
-        }
+    const errors = ref([]);
+
+    // Profil módosítása
+    const updateProfile = () => {
+        axios.put('/api/profile', {
+            name: authUserStore.user.name,
+            email: authUserStore.user.email,
+            role: authUserStore.user.role,
+        })
+        .then((response) => {
+            toastr.success('Profile updated successfully!');
+        })
+        .catch((error) => {
+            if (error.response && error.response.status === 422) {
+                errors.value = error.response.data.errors;
+            }
+        });
+    };
+
+    // Jelszómódosítés
+    const changePasswordForm = reactive({
+        currentPassword: '',
+        password: '',
+        passwordConfirmation: '',
     });
-};
 
-const changePasswordForm = reactive({
-    currentPassword: '',
-    password: '',
-    passwordConfirmation: '',
-});
+    // Jelszó módosítás mentése
+    const handleChangePassword = () => {
+        errors.value = '';
+        axios.post('/api/change-user-password', changePasswordForm)
+        .then((response) => {
+            toastr.success(response.data.message);
+            for (const field in changePasswordForm) {
+                changePasswordForm[field] = '';
+            }
+        })
+        .catch((error) => {
+            if (error.response && error.response.status === 422) {
+                errors.value = error.response.data.errors;
+            }
+        });
+    };
 
-const handleChangePassword = () => {
-    errors.value = '';
-    axios.post('/api/change-user-password', changePasswordForm)
-    .then((response) => {
-        toastr.success(response.data.message);
-        for (const field in changePasswordForm) {
-            changePasswordForm[field] = '';
-        }
-    })
-    .catch((error) => {
-        if (error.response && error.response.status === 422) {
-            errors.value = error.response.data.errors;
-        }
-    });
-};
+    const fileInput = ref(null);
 
-const fileInput = ref(null);
+    const openFileInput = () => {
+        fileInput.value.click();
+    };
 
-const openFileInput = () => {
-    fileInput.value.click();
-};
+    // Fájl változásának kezelése
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        authUserStore.user.avatar = URL.createObjectURL(file);
 
-const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    authUserStore.user.avatar = URL.createObjectURL(file);
+        const formData = new FormData();
+        formData.append('profile_picture', file);
 
-    const formData = new FormData();
-    formData.append('profile_picture', file);
-
-    axios.post('/api/upload-profile-image', formData)
-    .then((response) => {
-        toastr.success('Image uploaded successfully!');
-    });
-};
+        axios.post('/api/upload-profile-image', formData)
+        .then((response) => {
+            toastr.success('Image uploaded successfully!');
+        });
+    };
 </script>
 <template>
     <div class="content-header">
@@ -81,16 +86,23 @@ const handleFileChange = (event) => {
         </div>
     </div>
 
-
     <div class="content">
         <div class="container-fluid">
             <div class="row">
+                
+                <!-- Profile Picture -->
                 <div class="col-md-3">
                     <div class="card card-primary card-outline">
                         <div class="card-body box-profile">
                             <div class="text-center">
-                                <input @change="handleFileChange" ref="fileInput" type="file" class="d-none">
-                                <img @click="openFileInput" class="profile-user-img img-circle" :src="authUserStore.user.avatar" alt="User profile picture">
+                                <input @change="handleFileChange" 
+                                       ref="fileInput" 
+                                       type="file" 
+                                       class="d-none">
+                                <img @click="openFileInput" 
+                                     class="profile-user-img img-circle" 
+                                     :src="authUserStore.user.avatar" 
+                                     alt="User profile picture">
                             </div>
 
                             <h3 class="profile-username text-center">{{ authUserStore.user.name }}</h3>

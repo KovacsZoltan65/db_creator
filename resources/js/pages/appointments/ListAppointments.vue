@@ -1,70 +1,81 @@
 <script setup>
-import { onMounted, ref, computed } from 'vue';
-import Swal from 'sweetalert2';
-import axios from 'axios';
+    import { onMounted, ref, computed } from 'vue';
+    import Swal from 'sweetalert2';
+    import axios from 'axios';
 
-const selectedStatus = ref();
-const appointmentStatus = ref([]);
-const getAppointmentStatus = () => {
-    axios.get('/api/appointment-status')
-        .then((response) => {
-            appointmentStatus.value = response.data;
-        })
-};
-const appointments = ref([]);
-const getAppointments = (status) => {
-    selectedStatus.value = status;
-    const params = {};
-    if (status) {
-        params.status = status;
-    }
-    axios.get('/api/appointments', {
-        params: params,
-    })
-        .then((response) => {
-            appointments.value = response.data;
-        })
-};
+    // Kiválasztott státusz
+    const selectedStatus = ref();
+    // Időpont státuszok tárolója
+    const appointmentStatus = ref([]);
+    // Időpont státuszok lekérése
+    const getAppointmentStatus = () => {
+        axios.get('/api/appointment-status')
+            .then((response) => {
+                appointmentStatus.value = response.data;
+            })
+    };
 
-const appointmentsCount = computed(() => {
-    return appointmentStatus.value.map(status => status.count).reduce((acc, value) => acc + value, 0);
-});
-
-const updateAppointmentStatusCount = (id) => {
-    const deletedAppointmentStatus = appointments.value.data.find(appointment => appointment.id === id).status.name;
-    const statusToUpdate = appointmentStatus.value.find(status => status.name === deletedAppointmentStatus);
-    statusToUpdate.count--;
-};
-
-const deleteAppointment = (id) => {
-    Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            axios.delete(`/api/appointments/${id}`)
-                .then((response) => {
-                    updateAppointmentStatusCount(id);
-                    appointments.value.data = appointments.value.data.filter(appointment => appointment.id !== id);
-                    Swal.fire(
-                        'Deleted!',
-                        'Your file has been deleted.',
-                        'success'
-                    )
-                });
+    // Időpontok tárolója
+    const appointments = ref([]);
+    // Időpontok lekérése
+    const getAppointments = (status) => {
+        selectedStatus.value = status;
+        const params = {};
+        if (status) {
+            params.status = status;
         }
-    })
-};
+        axios.get('/api/appointments', {
+            params: params,
+        })
+            .then((response) => {
+                appointments.value = response.data;
+            })
+    };
 
-onMounted(() => {
-    getAppointments();
-    getAppointmentStatus();
-});
+    // Időpontok száma
+    const appointmentsCount = computed(() => {
+        return appointmentStatus.value.map(status => status.count).reduce((acc, value) => acc + value, 0);
+    });
+
+    // Időpont státusz váltás
+    const updateAppointmentStatusCount = (id) => {
+        const deletedAppointmentStatus = appointments.value.data.find(appointment => appointment.id === id).status.name;
+        const statusToUpdate = appointmentStatus.value.find(status => status.name === deletedAppointmentStatus);
+        statusToUpdate.count--;
+    };
+
+    // Időpont törlése
+    const deleteAppointment = (id) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.delete(`/api/appointments/${id}`)
+                    .then((response) => {
+                        updateAppointmentStatusCount(id);
+                        appointments.value.data = appointments.value.data.filter(appointment => appointment.id !== id);
+                        Swal.fire(
+                            'Deleted!',
+                            'Your file has been deleted.',
+                            'success'
+                        )
+                    });
+            }
+        })
+    };
+
+    onMounted(() => {
+        // Időpontok lekérése
+        getAppointments();
+        // Időpont státuszok lekérése
+        getAppointmentStatus();
+    });
 </script>
 <template>
     <div class="content-header">
@@ -129,14 +140,17 @@ onMounted(() => {
                                         <td>{{ appointment.start_time }}</td>
                                         <td>{{ appointment.end_time }}</td>
                                         <td>
-                                            <span class="badge" :class="`badge-${appointment.status.color}`">{{
-                                                appointment.status.name }}</span>
+                                            <span class="badge" 
+                                                  :class="`badge-${appointment.status.color}`"
+                                            >{{ appointment.status.name }}</span>
                                         </td>
                                         <td>
+                                            <!-- EDIT -->
                                             <router-link :to="`/admin/appointments/${appointment.id}/edit`">
                                                 <i class="fa fa-edit mr-2"></i>
                                             </router-link>
 
+                                            <!-- DELETE -->
                                             <a href="#" @click.prevent="deleteAppointment(appointment.id)">
                                                 <i class="fa fa-trash text-danger"></i>
                                             </a>
@@ -149,4 +163,5 @@ onMounted(() => {
                 </div>
             </div>
         </div>
-    </div></template>
+    </div>
+</template>

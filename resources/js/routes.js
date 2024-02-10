@@ -2,6 +2,8 @@ import Dashboard from './components/Dashboard.vue';
 import ListAppointments from './pages/appointments/ListAppointments.vue';
 import AppointmentForm from './pages/appointments/AppointmentForm.vue';
 import UserList from './pages/users/UserList.vue';
+import ClientList from './pages/clients/ClientList.vue';
+
 import UpdateSetting from './pages/settings/UpdateSetting.vue';
 import UpdateProfile from './pages/profile/UpdateProfile.vue';
 import Login from './pages/auth/Login.vue';
@@ -53,5 +55,11 @@ export default [
         path: '/admin/profile',
         name: 'admin.profile',
         component: UpdateProfile,
+    },
+
+    {
+        path: '/admin/clients',
+        name: 'admin.clients',
+        component: ClientList,
     }
 ]

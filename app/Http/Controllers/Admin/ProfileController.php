@@ -12,7 +12,9 @@ class ProfileController extends Controller
 {
     public function index(Request $request)
     {
-        return $request->user()->only(['name', 'email', 'role', 'avatar']);
+        $user = $request->user()->only(['name', 'email', 'role', 'avatar']);
+\Log::info(print_r($user, true));
+        return $user;
     }
 
     public function update(Request $request)
@@ -32,11 +34,11 @@ class ProfileController extends Controller
         if ($request->hasFile('profile_picture')) {
             $previousPath = $request->user()->getRawOriginal('avatar');
 
+            Storage::delete($previousPath);
+            
             $link = Storage::put('/photos', $request->file('profile_picture'));
 
             $request->user()->update(['avatar' => $link]);
-
-            Storage::delete($previousPath);
 
             return response()->json(['message' => 'Profile picture uploaded successfully!']);
         }

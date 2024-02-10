@@ -1,33 +1,35 @@
 <script setup>
-import axios from 'axios';
-import { reactive, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useAuthUserStore } from '../../stores/AuthUserStore';
+    import axios from 'axios';
+    import { reactive, ref } from 'vue';
+    import { useRouter } from 'vue-router';
+    import { useAuthUserStore } from '../../stores/AuthUserStore';
 
-const authUserStore = useAuthUserStore();
-const router = useRouter();
-const form = reactive({
-    email: '',
-    password: '',
-});
+    const authUserStore = useAuthUserStore();
+    const router = useRouter();
+    const form = reactive({
+        email: '',
+        password: '',
+    });
 
-const loading = ref(false);
+    const loading = ref(false);
 
-const errorMessage = ref('');
-const handleSubmit = () => {
-    loading.value = true;
-    errorMessage.value = '';
-    axios.post('/login', form)
-        .then(() => {
-            router.push('/admin/dashboard');
-        })
-        .catch((error) => {
-            errorMessage.value = error.response.data.message;
-        })
-        .finally(() => {
-            loading.value = false;
-        });
-};
+    // Hibaüzenet
+    const errorMessage = ref('');
+    // Form elküldésének kezelése
+    const handleSubmit = () => {
+        loading.value = true;
+        errorMessage.value = '';
+        axios.post('/login', form)
+            .then(() => {
+                router.push('/admin/dashboard');
+            })
+            .catch((error) => {
+                errorMessage.value = error.response.data.message;
+            })
+            .finally(() => {
+                loading.value = false;
+            });
+    };
 </script>
 
 <template>
@@ -37,6 +39,7 @@ const handleSubmit = () => {
             <div class="card-header text-center">
                 <a href="#" class="h1"><b>Admin</b>Login</a>
             </div>
+
             <div class="card-body">
                 <p class="login-box-msg">Sign in to start your session</p>
                 <div v-if="errorMessage" class="alert alert-danger" role="alert">

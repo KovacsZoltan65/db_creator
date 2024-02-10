@@ -9,6 +9,14 @@ class ClientController extends Controller
 {
     public function index()
     {
-        return Client::latest()->get();
+        $clients = Client::query()
+            ->where(request('query'), function($query, $searchQuery){
+                $query->where('first_name', 'like', "%{$searchQuery}%")
+                    ->whereOr('last_name', 'like', "%{$searchQuery}%");
+            })
+            ->latest()
+            ->paginate(config('app.pagination_limit'));
+            dd($clients);
+        return $clients;
     }
 }

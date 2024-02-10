@@ -1,10 +1,10 @@
 <script setup>
-import { useAuthUserStore } from '../stores/AuthUserStore';
-const authUserStore = useAuthUserStore();
+    import { useAuthUserStore } from '../stores/AuthUserStore';
+    const authUserStore = useAuthUserStore();
 
-defineProps({
-    settings: Object,
-});
+    defineProps({
+        settings: Object,
+    });
 </script>
 
 <template>

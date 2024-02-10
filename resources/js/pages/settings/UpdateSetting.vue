@@ -1,34 +1,35 @@
 <script setup>
-import { onMounted, ref } from 'vue';
-import { useToastr } from '@/toastr';
+    import { onMounted, ref } from 'vue';
+    import { useToastr } from '@/toastr';
 
-const settings = ref([]);
-const toastr = useToastr();
+    const settings = ref([]);
+    const toastr = useToastr();
 
-const getSettings = () => {
-    axios.get('/api/settings')
-    .then((response) => {
-        settings.value = response.data;
+    const getSettings = () => {
+        axios.get('/api/settings')
+        .then((response) => {
+            settings.value = response.data;
+        });
+    };
+
+    const errors = ref();
+    
+    const updateSettings = () => {
+        errors.value = '';
+        axios.post('/api/settings', settings.value)
+        .then((response) => {
+            toastr.success('Settings updated successfully!');
+        })
+        .catch((error) => {
+            if (error.response && error.response.status === 422) {
+                errors.value = error.response.data.errors;
+            }
+        });
+    };
+
+    onMounted(() => {
+        getSettings();
     });
-};
-
-const errors = ref();
-const updateSettings = () => {
-    errors.value = '';
-    axios.post('/api/settings', settings.value)
-    .then((response) => {
-        toastr.success('Settings updated successfully!');
-    })
-    .catch((error) => {
-        if (error.response && error.response.status === 422) {
-            errors.value = error.response.data.errors;
-        }
-    });
-};
-
-onMounted(() => {
-    getSettings();
-});
 </script>
 
 <template>
@@ -62,9 +63,11 @@ onMounted(() => {
                             <div class="card-body">
                                 <div class="form-group">
                                     <label for="appName">App Display Name</label>
-                                    <input v-model="settings.app_name" type="text" class="form-control" id="appName"
-                                        placeholder="Enter app display name">
-                                    <span class="text-danger text-sm" v-if="errors && errors.app_name">{{ errors.app_name[0] }}</span>
+                                    <input v-model="settings.app_name" type="text" 
+                                           class="form-control" id="appName"
+                                           placeholder="Enter app display name">
+                                    <span class="text-danger text-sm" 
+                                          v-if="errors && errors.app_name">{{ errors.app_name[0] }}</span>
                                 </div>
                                 <div class="form-group">
                                     <label for="dateFormat">Date Format</label>
@@ -86,9 +89,11 @@ onMounted(() => {
                             </div>
 
                             <div class="card-footer">
-                                <button type="submit" class="btn btn-primary"><i class="fa fa-save mr-1"></i>Save
-                                    Changes</button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa fa-save mr-1"></i>Save Changes
+                                </button>
                             </div>
+                            
                         </form>
                     </div>
                 </div>

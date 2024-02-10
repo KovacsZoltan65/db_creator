@@ -30,9 +30,15 @@ Route::get('/', function () {
 // });
 
 Route::middleware('auth')->group(function () {
+    // ========================
+    // DASHBOARD
+    // ========================
     Route::get('/api/stats/appointments', [DashboardStatController::class, 'appointments']);
     Route::get('/api/stats/users', [DashboardStatController::class, 'users']);
 
+    // ========================
+    // USERS
+    // ========================
     Route::get('/api/users', [UserController::class, 'index']);
     Route::post('/api/users', [UserController::class, 'store']);
     Route::patch('/api/users/{user}/change-role', [UserController::class, 'changeRole']);
@@ -40,8 +46,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/api/users/{user}', [UserController::class, 'destory']);
     Route::delete('/api/users', [UserController::class, 'bulkDelete']);
 
+    // ========================
+    // CLIENTS
+    // ========================
     Route::get('/api/clients', [ClientController::class, 'index']);
 
+    // ========================
+    // APPOINTMENTS
+    // ========================
     Route::get('/api/appointment-status', [AppointmentStatusController::class, 'getStatusWithCount']);
     Route::get('/api/appointments', [AppointmentController::class, 'index']);
     Route::post('/api/appointments/create', [AppointmentController::class, 'store']);
@@ -49,9 +61,15 @@ Route::middleware('auth')->group(function () {
     Route::put('/api/appointments/{appointment}/edit', [AppointmentController::class, 'update']);
     Route::delete('/api/appointments/{appointment}', [AppointmentController::class, 'destroy']);
 
+    // ========================
+    // SETTINGS
+    // ========================
     Route::get('/api/settings', [SettingController::class, 'index']);
     Route::post('/api/settings', [SettingController::class, 'update']);
 
+    // ========================
+    // PROFILE
+    // ========================
     Route::get('/api/profile', [ProfileController::class, 'index']);
     Route::put('/api/profile', [ProfileController::class, 'update']);
     Route::post('/api/upload-profile-image', [ProfileController::class, 'uploadImage']);

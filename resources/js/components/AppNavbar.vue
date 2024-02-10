@@ -1,15 +1,21 @@
 <script setup>
-import { useSettingStore } from '../stores/SettingStore';
+    import { useSettingStore } from '../stores/SettingStore';
 
-const settingStore = useSettingStore();
+    const settingStore = useSettingStore();
 </script>
 
 <template>
-    <nav class="main-header navbar navbar-expand" :class="settingStore.theme === 'dark' ? 'navbar-dark': 'navbar-light'">
+    <nav class="main-header navbar navbar-expand" 
+         :class="settingStore.theme === 'dark' ? 'navbar-dark': 'navbar-light'">
 
         <ul class="navbar-nav">
             <li class="nav-item" id="toggleMenuIcon">
-                <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                <a class="nav-link" 
+                   data-widget="pushmenu" 
+                   href="#" 
+                   role="button">
+                   <i class="fas fa-bars"></i>
+                </a>
             </li>
             <!-- <li class="nav-item d-none d-sm-inline-block">
                 <a href="index3.html" class="nav-link">Home</a>
@@ -27,6 +33,7 @@ const settingStore = useSettingStore();
 
         <ul class="navbar-nav ml-auto">
 
+            <!-- SEARCH -->
             <li class="nav-item">
                 <a class="nav-link" data-widget="navbar-search" href="#" role="button">
                     <i class="fas fa-search"></i>
@@ -49,6 +56,7 @@ const settingStore = useSettingStore();
                 </div>
             </li>
 
+            <!-- MESSAGES -->
             <li class="nav-item dropdown">
                 <a class="nav-link" data-toggle="dropdown" href="#">
                     <i class="far fa-comments"></i>
@@ -110,6 +118,7 @@ const settingStore = useSettingStore();
                 </div>
             </li>
 
+            <!-- NOTIFICATIONS -->
             <li class="nav-item dropdown">
                 <a class="nav-link" data-toggle="dropdown" href="#">
                     <i class="far fa-bell"></i>
@@ -136,11 +145,15 @@ const settingStore = useSettingStore();
                     <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
                 </div>
             </li>
+
+            <!-- FULL SCREEN -->
             <li class="nav-item">
                 <a class="nav-link" data-widget="fullscreen" href="#" role="button">
                     <i class="fas fa-expand-arrows-alt"></i>
                 </a>
             </li>
+
+            <!-- SETTINGS -->
             <li class="nav-item">
                 <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
                     <i class="fas fa-th-large"></i>
